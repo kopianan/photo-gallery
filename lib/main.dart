@@ -5,6 +5,7 @@ import 'package:photo_gallery/injection.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  //load key from env file
   await dotenv.load(fileName: ".env");
 
   configureDependencies();

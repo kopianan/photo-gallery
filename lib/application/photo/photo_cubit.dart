@@ -19,7 +19,7 @@ class PhotoCubit extends Cubit<PhotoState> {
     emit(PhotoState.loading());
     final result = await photoRepository.loadPhotos(page, perPage);
     result.fold(
-      (l) => emit(PhotoState.error()),
+      (l) => emit(PhotoState.error(l)),
       (r) => emit(PhotoState.onGetPhotos(r)),
     );
   }
@@ -33,7 +33,7 @@ class PhotoCubit extends Cubit<PhotoState> {
     emit(PhotoState.loading());
     final result = await photoRepository.searchPhotos(page, perPage, keyword);
     result.fold(
-      (l) => emit(PhotoState.error()),
+      (l) => emit(PhotoState.error(l)),
       (r) => emit(PhotoState.onSearchPhoto(r)),
     );
   }
@@ -43,7 +43,7 @@ class PhotoCubit extends Cubit<PhotoState> {
     emit(PhotoState.loading());
     final result = await photoRepository.getPhotoStatus(id);
     result.fold(
-      (l) => emit(PhotoState.error()),
+      (l) => emit(PhotoState.error(l)),
       (r) => emit(PhotoState.onGetPhotoStat(r)),
     );
   }

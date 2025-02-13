@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_gallery/application/photo/photo_cubit.dart';
 import 'package:photo_gallery/application/photo_data/photo_data_cubit.dart';
 import 'package:photo_gallery/domain/photo/photo_model.dart';
+import 'package:photo_gallery/infrastructure/enum/status_type.dart';
 import 'package:photo_gallery/injection.dart';
 import 'package:photo_gallery/presentation/detail/widgets/collection_list_section.dart';
 import 'package:photo_gallery/presentation/detail/widgets/status_widget.dart';
@@ -11,6 +12,7 @@ import 'package:photo_gallery/presentation/detail/widgets/user_detail_widget.dar
 import 'package:photo_gallery/presentation/detail/widgets/users_photos_section.dart';
 import 'package:photo_gallery/presentation/widgets/marquee_widget.dart';
 import 'package:photo_gallery/presentation/widgets/subtitle_widget.dart';
+import 'package:photo_gallery/util/toast.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -67,6 +69,13 @@ class _DetailPageState extends State<DetailPage> {
             listener: (context, state) {
               state.maybeMap(
                 orElse: () {},
+                error: (value) {
+                  Toast.showToast(
+                    context,
+                    label: value.errMessage,
+                    type: StatusType.error,
+                  );
+                },
                 onGetPhotoStat: (value) {
                   getIt<PhotoDataCubit>().setPhotoStat(value.photoStat);
                 },

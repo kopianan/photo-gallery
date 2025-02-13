@@ -4,7 +4,7 @@ part of 'collection_cubit.dart';
 class CollectionState with _$CollectionState {
   const factory CollectionState.initial() = _Initial;
   const factory CollectionState.loading() = _Loading;
-  const factory CollectionState.error() = _Error;
+  const factory CollectionState.error(String errorMsg) = _Error;
   const factory CollectionState.getUserCollection(
       List<UserCollection> collections) = _GetUserCollection;
 }

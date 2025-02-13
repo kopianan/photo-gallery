@@ -15,10 +15,10 @@ class MarqueeWidget extends StatefulWidget {
   });
 
   @override
-  _MarqueeWidgetState createState() => _MarqueeWidgetState();
+  MarqueeWidgetState createState() => MarqueeWidgetState();
 }
 
-class _MarqueeWidgetState extends State<MarqueeWidget> {
+class MarqueeWidgetState extends State<MarqueeWidget> {
   late ScrollController scrollController;
 
   @override
@@ -38,9 +38,9 @@ class _MarqueeWidgetState extends State<MarqueeWidget> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       physics: NeverScrollableScrollPhysics(),
-      child: widget.child,
       scrollDirection: widget.direction,
       controller: scrollController,
+      child: widget.child,
     );
   }
 

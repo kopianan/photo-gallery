@@ -74,6 +74,13 @@ class _HomePageState extends State<HomePage> {
       child: BlocConsumer<PhotoCubit, PhotoState>(
         listener: (context, state) {
           state.maybeMap(
+            error: (value) {
+              Toast.showToast(
+                context,
+                label: value.errMessage,
+                type: StatusType.error,
+              );
+            },
             orElse: () {
               photoDataCubit.setLoadingStatus(false);
             },

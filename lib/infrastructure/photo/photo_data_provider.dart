@@ -18,27 +18,36 @@ class PhotoDataProvider implements PhotoRepository {
   Future<Either<String, List<PhotoModel>>> loadPhotos(
       int page, int totalItem) async {
     //call api with
-    final response =
-        await dio.get("/photos?page=1&per_page=1", queryParameters: {
-      "page": page,
-      "per_page": totalItem,
-    });
-    //receive response as list
-    final list = response.data as List;
-    //convert with dto (data transfer object)
-    final dataList = list.map((e) => PhotoDto.fromJson(e).toDomain()).toList();
-    return right(dataList);
+    try {
+      final response =
+          await dio.get("/photos?page=1&per_page=1", queryParameters: {
+        "page": page,
+        "per_page": totalItem,
+      });
+      //receive response as list
+      final list = response.data as List;
+      //convert with dto (data transfer object)
+      final dataList =
+          list.map((e) => PhotoDto.fromJson(e).toDomain()).toList();
+      return right(dataList);
+    } on Exception catch (e) {
+      return left(e.toString());
+    }
   }
 
   @override
   Future<Either<String, PhotoStat>> getPhotoStatus(String id) async {
     //call api with
-    final response = await dio.get("/photos/$id/statistics");
-    //receive response as list
+    try {
+      final response = await dio.get("/photos/$id/statistics");
+      //receive response as list
 
-    //convert with dto (data transfer object)
-    final dataList = PhotoStatDto.fromJson(response.data).toDomain();
-    return right(dataList);
+      //convert with dto (data transfer object)
+      final dataList = PhotoStatDto.fromJson(response.data).toDomain();
+      return right(dataList);
+    } on Exception catch (e) {
+      return left(e.toString());
+    }
   }
 
   @override

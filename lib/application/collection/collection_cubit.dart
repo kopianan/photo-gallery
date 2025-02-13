@@ -16,7 +16,7 @@ class CollectionCubit extends Cubit<CollectionState> {
     emit(CollectionState.loading());
     final result = await collectionRepository.getUserCollections(userName);
     result.fold(
-      (l) => emit(CollectionState.error()),
+      (l) => emit(CollectionState.error(l)),
       (r) => emit(CollectionState.getUserCollection(r)),
     );
   }

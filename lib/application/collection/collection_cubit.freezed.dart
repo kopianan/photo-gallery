@@ -20,7 +20,7 @@ mixin _$CollectionState {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function() error,
+    required TResult Function(String errorMsg) error,
     required TResult Function(List<UserCollection> collections)
         getUserCollection,
   }) =>
@@ -29,7 +29,7 @@ mixin _$CollectionState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function()? error,
+    TResult? Function(String errorMsg)? error,
     TResult? Function(List<UserCollection> collections)? getUserCollection,
   }) =>
       throw _privateConstructorUsedError;
@@ -37,7 +37,7 @@ mixin _$CollectionState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function()? error,
+    TResult Function(String errorMsg)? error,
     TResult Function(List<UserCollection> collections)? getUserCollection,
     required TResult orElse(),
   }) =>
@@ -133,7 +133,7 @@ class _$InitialImpl implements _Initial {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function() error,
+    required TResult Function(String errorMsg) error,
     required TResult Function(List<UserCollection> collections)
         getUserCollection,
   }) {
@@ -145,7 +145,7 @@ class _$InitialImpl implements _Initial {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function()? error,
+    TResult? Function(String errorMsg)? error,
     TResult? Function(List<UserCollection> collections)? getUserCollection,
   }) {
     return initial?.call();
@@ -156,7 +156,7 @@ class _$InitialImpl implements _Initial {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function()? error,
+    TResult Function(String errorMsg)? error,
     TResult Function(List<UserCollection> collections)? getUserCollection,
     required TResult orElse(),
   }) {
@@ -251,7 +251,7 @@ class _$LoadingImpl implements _Loading {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function() error,
+    required TResult Function(String errorMsg) error,
     required TResult Function(List<UserCollection> collections)
         getUserCollection,
   }) {
@@ -263,7 +263,7 @@ class _$LoadingImpl implements _Loading {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function()? error,
+    TResult? Function(String errorMsg)? error,
     TResult? Function(List<UserCollection> collections)? getUserCollection,
   }) {
     return loading?.call();
@@ -274,7 +274,7 @@ class _$LoadingImpl implements _Loading {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function()? error,
+    TResult Function(String errorMsg)? error,
     TResult Function(List<UserCollection> collections)? getUserCollection,
     required TResult orElse(),
   }) {
@@ -331,6 +331,8 @@ abstract class _$$ErrorImplCopyWith<$Res> {
   factory _$$ErrorImplCopyWith(
           _$ErrorImpl value, $Res Function(_$ErrorImpl) then) =
       __$$ErrorImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String errorMsg});
 }
 
 /// @nodoc
@@ -343,37 +345,63 @@ class __$$ErrorImplCopyWithImpl<$Res>
 
   /// Create a copy of CollectionState
   /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? errorMsg = null,
+  }) {
+    return _then(_$ErrorImpl(
+      null == errorMsg
+          ? _value.errorMsg
+          : errorMsg // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
 }
 
 /// @nodoc
 
 class _$ErrorImpl implements _Error {
-  const _$ErrorImpl();
+  const _$ErrorImpl(this.errorMsg);
+
+  @override
+  final String errorMsg;
 
   @override
   String toString() {
-    return 'CollectionState.error()';
+    return 'CollectionState.error(errorMsg: $errorMsg)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$ErrorImpl);
+        (other.runtimeType == runtimeType &&
+            other is _$ErrorImpl &&
+            (identical(other.errorMsg, errorMsg) ||
+                other.errorMsg == errorMsg));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode => Object.hash(runtimeType, errorMsg);
+
+  /// Create a copy of CollectionState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ErrorImplCopyWith<_$ErrorImpl> get copyWith =>
+      __$$ErrorImplCopyWithImpl<_$ErrorImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function() error,
+    required TResult Function(String errorMsg) error,
     required TResult Function(List<UserCollection> collections)
         getUserCollection,
   }) {
-    return error();
+    return error(errorMsg);
   }
 
   @override
@@ -381,10 +409,10 @@ class _$ErrorImpl implements _Error {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function()? error,
+    TResult? Function(String errorMsg)? error,
     TResult? Function(List<UserCollection> collections)? getUserCollection,
   }) {
-    return error?.call();
+    return error?.call(errorMsg);
   }
 
   @override
@@ -392,12 +420,12 @@ class _$ErrorImpl implements _Error {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function()? error,
+    TResult Function(String errorMsg)? error,
     TResult Function(List<UserCollection> collections)? getUserCollection,
     required TResult orElse(),
   }) {
     if (error != null) {
-      return error();
+      return error(errorMsg);
     }
     return orElse();
   }
@@ -441,7 +469,15 @@ class _$ErrorImpl implements _Error {
 }
 
 abstract class _Error implements CollectionState {
-  const factory _Error() = _$ErrorImpl;
+  const factory _Error(final String errorMsg) = _$ErrorImpl;
+
+  String get errorMsg;
+
+  /// Create a copy of CollectionState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$ErrorImplCopyWith<_$ErrorImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -523,7 +559,7 @@ class _$GetUserCollectionImpl implements _GetUserCollection {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function() error,
+    required TResult Function(String errorMsg) error,
     required TResult Function(List<UserCollection> collections)
         getUserCollection,
   }) {
@@ -535,7 +571,7 @@ class _$GetUserCollectionImpl implements _GetUserCollection {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function()? error,
+    TResult? Function(String errorMsg)? error,
     TResult? Function(List<UserCollection> collections)? getUserCollection,
   }) {
     return getUserCollection?.call(collections);
@@ -546,7 +582,7 @@ class _$GetUserCollectionImpl implements _GetUserCollection {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function()? error,
+    TResult Function(String errorMsg)? error,
     TResult Function(List<UserCollection> collections)? getUserCollection,
     required TResult orElse(),
   }) {

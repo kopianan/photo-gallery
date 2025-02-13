@@ -20,7 +20,7 @@ mixin _$PhotoState {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function() error,
+    required TResult Function(String errMessage) error,
     required TResult Function(List<PhotoModel> photos) onGetPhotos,
     required TResult Function(PhotoStat photoStat) onGetPhotoStat,
     required TResult Function(SearchPhoto searchResult) onSearchPhoto,
@@ -30,7 +30,7 @@ mixin _$PhotoState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function()? error,
+    TResult? Function(String errMessage)? error,
     TResult? Function(List<PhotoModel> photos)? onGetPhotos,
     TResult? Function(PhotoStat photoStat)? onGetPhotoStat,
     TResult? Function(SearchPhoto searchResult)? onSearchPhoto,
@@ -40,7 +40,7 @@ mixin _$PhotoState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function()? error,
+    TResult Function(String errMessage)? error,
     TResult Function(List<PhotoModel> photos)? onGetPhotos,
     TResult Function(PhotoStat photoStat)? onGetPhotoStat,
     TResult Function(SearchPhoto searchResult)? onSearchPhoto,
@@ -144,7 +144,7 @@ class _$InitialImpl implements _Initial {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function() error,
+    required TResult Function(String errMessage) error,
     required TResult Function(List<PhotoModel> photos) onGetPhotos,
     required TResult Function(PhotoStat photoStat) onGetPhotoStat,
     required TResult Function(SearchPhoto searchResult) onSearchPhoto,
@@ -157,7 +157,7 @@ class _$InitialImpl implements _Initial {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function()? error,
+    TResult? Function(String errMessage)? error,
     TResult? Function(List<PhotoModel> photos)? onGetPhotos,
     TResult? Function(PhotoStat photoStat)? onGetPhotoStat,
     TResult? Function(SearchPhoto searchResult)? onSearchPhoto,
@@ -170,7 +170,7 @@ class _$InitialImpl implements _Initial {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function()? error,
+    TResult Function(String errMessage)? error,
     TResult Function(List<PhotoModel> photos)? onGetPhotos,
     TResult Function(PhotoStat photoStat)? onGetPhotoStat,
     TResult Function(SearchPhoto searchResult)? onSearchPhoto,
@@ -273,7 +273,7 @@ class _$LoadingImpl implements _Loading {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function() error,
+    required TResult Function(String errMessage) error,
     required TResult Function(List<PhotoModel> photos) onGetPhotos,
     required TResult Function(PhotoStat photoStat) onGetPhotoStat,
     required TResult Function(SearchPhoto searchResult) onSearchPhoto,
@@ -286,7 +286,7 @@ class _$LoadingImpl implements _Loading {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function()? error,
+    TResult? Function(String errMessage)? error,
     TResult? Function(List<PhotoModel> photos)? onGetPhotos,
     TResult? Function(PhotoStat photoStat)? onGetPhotoStat,
     TResult? Function(SearchPhoto searchResult)? onSearchPhoto,
@@ -299,7 +299,7 @@ class _$LoadingImpl implements _Loading {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function()? error,
+    TResult Function(String errMessage)? error,
     TResult Function(List<PhotoModel> photos)? onGetPhotos,
     TResult Function(PhotoStat photoStat)? onGetPhotoStat,
     TResult Function(SearchPhoto searchResult)? onSearchPhoto,
@@ -364,6 +364,8 @@ abstract class _$$ErrorImplCopyWith<$Res> {
   factory _$$ErrorImplCopyWith(
           _$ErrorImpl value, $Res Function(_$ErrorImpl) then) =
       __$$ErrorImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String errMessage});
 }
 
 /// @nodoc
@@ -376,38 +378,64 @@ class __$$ErrorImplCopyWithImpl<$Res>
 
   /// Create a copy of PhotoState
   /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? errMessage = null,
+  }) {
+    return _then(_$ErrorImpl(
+      null == errMessage
+          ? _value.errMessage
+          : errMessage // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
 }
 
 /// @nodoc
 
 class _$ErrorImpl implements _Error {
-  const _$ErrorImpl();
+  const _$ErrorImpl(this.errMessage);
+
+  @override
+  final String errMessage;
 
   @override
   String toString() {
-    return 'PhotoState.error()';
+    return 'PhotoState.error(errMessage: $errMessage)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$ErrorImpl);
+        (other.runtimeType == runtimeType &&
+            other is _$ErrorImpl &&
+            (identical(other.errMessage, errMessage) ||
+                other.errMessage == errMessage));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode => Object.hash(runtimeType, errMessage);
+
+  /// Create a copy of PhotoState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ErrorImplCopyWith<_$ErrorImpl> get copyWith =>
+      __$$ErrorImplCopyWithImpl<_$ErrorImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function() error,
+    required TResult Function(String errMessage) error,
     required TResult Function(List<PhotoModel> photos) onGetPhotos,
     required TResult Function(PhotoStat photoStat) onGetPhotoStat,
     required TResult Function(SearchPhoto searchResult) onSearchPhoto,
   }) {
-    return error();
+    return error(errMessage);
   }
 
   @override
@@ -415,12 +443,12 @@ class _$ErrorImpl implements _Error {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function()? error,
+    TResult? Function(String errMessage)? error,
     TResult? Function(List<PhotoModel> photos)? onGetPhotos,
     TResult? Function(PhotoStat photoStat)? onGetPhotoStat,
     TResult? Function(SearchPhoto searchResult)? onSearchPhoto,
   }) {
-    return error?.call();
+    return error?.call(errMessage);
   }
 
   @override
@@ -428,14 +456,14 @@ class _$ErrorImpl implements _Error {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function()? error,
+    TResult Function(String errMessage)? error,
     TResult Function(List<PhotoModel> photos)? onGetPhotos,
     TResult Function(PhotoStat photoStat)? onGetPhotoStat,
     TResult Function(SearchPhoto searchResult)? onSearchPhoto,
     required TResult orElse(),
   }) {
     if (error != null) {
-      return error();
+      return error(errMessage);
     }
     return orElse();
   }
@@ -485,7 +513,15 @@ class _$ErrorImpl implements _Error {
 }
 
 abstract class _Error implements PhotoState {
-  const factory _Error() = _$ErrorImpl;
+  const factory _Error(final String errMessage) = _$ErrorImpl;
+
+  String get errMessage;
+
+  /// Create a copy of PhotoState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$ErrorImplCopyWith<_$ErrorImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -564,7 +600,7 @@ class _$OnGetPhotosImpl implements _OnGetPhotos {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function() error,
+    required TResult Function(String errMessage) error,
     required TResult Function(List<PhotoModel> photos) onGetPhotos,
     required TResult Function(PhotoStat photoStat) onGetPhotoStat,
     required TResult Function(SearchPhoto searchResult) onSearchPhoto,
@@ -577,7 +613,7 @@ class _$OnGetPhotosImpl implements _OnGetPhotos {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function()? error,
+    TResult? Function(String errMessage)? error,
     TResult? Function(List<PhotoModel> photos)? onGetPhotos,
     TResult? Function(PhotoStat photoStat)? onGetPhotoStat,
     TResult? Function(SearchPhoto searchResult)? onSearchPhoto,
@@ -590,7 +626,7 @@ class _$OnGetPhotosImpl implements _OnGetPhotos {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function()? error,
+    TResult Function(String errMessage)? error,
     TResult Function(List<PhotoModel> photos)? onGetPhotos,
     TResult Function(PhotoStat photoStat)? onGetPhotoStat,
     TResult Function(SearchPhoto searchResult)? onSearchPhoto,
@@ -742,7 +778,7 @@ class _$OnGetPhotoStatImpl implements _OnGetPhotoStat {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function() error,
+    required TResult Function(String errMessage) error,
     required TResult Function(List<PhotoModel> photos) onGetPhotos,
     required TResult Function(PhotoStat photoStat) onGetPhotoStat,
     required TResult Function(SearchPhoto searchResult) onSearchPhoto,
@@ -755,7 +791,7 @@ class _$OnGetPhotoStatImpl implements _OnGetPhotoStat {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function()? error,
+    TResult? Function(String errMessage)? error,
     TResult? Function(List<PhotoModel> photos)? onGetPhotos,
     TResult? Function(PhotoStat photoStat)? onGetPhotoStat,
     TResult? Function(SearchPhoto searchResult)? onSearchPhoto,
@@ -768,7 +804,7 @@ class _$OnGetPhotoStatImpl implements _OnGetPhotoStat {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function()? error,
+    TResult Function(String errMessage)? error,
     TResult Function(List<PhotoModel> photos)? onGetPhotos,
     TResult Function(PhotoStat photoStat)? onGetPhotoStat,
     TResult Function(SearchPhoto searchResult)? onSearchPhoto,
@@ -920,7 +956,7 @@ class _$OnSearchPhotoImpl implements _OnSearchPhoto {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function() error,
+    required TResult Function(String errMessage) error,
     required TResult Function(List<PhotoModel> photos) onGetPhotos,
     required TResult Function(PhotoStat photoStat) onGetPhotoStat,
     required TResult Function(SearchPhoto searchResult) onSearchPhoto,
@@ -933,7 +969,7 @@ class _$OnSearchPhotoImpl implements _OnSearchPhoto {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function()? error,
+    TResult? Function(String errMessage)? error,
     TResult? Function(List<PhotoModel> photos)? onGetPhotos,
     TResult? Function(PhotoStat photoStat)? onGetPhotoStat,
     TResult? Function(SearchPhoto searchResult)? onSearchPhoto,
@@ -946,7 +982,7 @@ class _$OnSearchPhotoImpl implements _OnSearchPhoto {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function()? error,
+    TResult Function(String errMessage)? error,
     TResult Function(List<PhotoModel> photos)? onGetPhotos,
     TResult Function(PhotoStat photoStat)? onGetPhotoStat,
     TResult Function(SearchPhoto searchResult)? onSearchPhoto,
