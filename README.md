@@ -13,7 +13,7 @@ Hi, this is simple application that will show photos using unsplash free API.
 	 - [x] User's photo preview (if exist) 
 
 # How To Run
- - Add `.env` file. (will send env file separately) 
+ - Add `.env` file. (will send env file separately). can find `.env` template file in the project root dir. you can use your own API key as well
  - Run 
 	 - `flutter clean`
 	 - `flutter pub get`
