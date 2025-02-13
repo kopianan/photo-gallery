@@ -1,16 +1,26 @@
-# photo_gallery
+# Photo Gallery By Kopianan
+Hi, this is simple application that will show photos using unsplash free API. 
 
-A new Flutter project.
+**FEATURE** : 
+ - [x] Show Grid
+	 - [x] Parallax Effect
+ - [x] Search Bar
+ - [x] Detail Page
+	 - [x] Download Url 
+	 - [x] User's instagram link 
+	 - [x] User's page link
+	 - [x] User's collection (if exist) 
+	 - [x] User's photo preview (if exist) 
 
-## Getting Started
+# How To Run
+ - Add `.env` file. (will send env file separately) 
+ - Run 
+	 - `flutter clean`
+	 - `flutter pub get`
+ - Run build runner 
+	 - `dart run build runner build -d` or `flutter pub run build_runner -d`
+ - Run the project (use android emulator or ios emulator)
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# Version
+Please make sure you use Flutter version **`3.27.4`** to avoid incompatible package version
+ 

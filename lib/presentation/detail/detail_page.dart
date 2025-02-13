@@ -8,6 +8,7 @@ import 'package:photo_gallery/injection.dart';
 import 'package:photo_gallery/presentation/detail/widgets/collection_list_section.dart';
 import 'package:photo_gallery/presentation/detail/widgets/status_widget.dart';
 import 'package:photo_gallery/presentation/detail/widgets/user_detail_widget.dart';
+import 'package:photo_gallery/presentation/detail/widgets/users_photos_section.dart';
 import 'package:photo_gallery/presentation/widgets/marquee_widget.dart';
 import 'package:photo_gallery/presentation/widgets/subtitle_widget.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -139,47 +140,14 @@ class _DetailPageState extends State<DetailPage> {
                               userName: photoState.getUserName(photoModel),
                             );
                           }),
-                          Divider(
-                            height: 40,
-                            indent: 20,
-                            endIndent: 20,
-                          ),
+
                           //Preview Collections
                           BlocBuilder<PhotoDataCubit, PhotoDataState>(
                             builder: (context, photoState) {
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                      padding: const EdgeInsets.only(left: 20),
-                                      child: SubtitleWidget(
-                                          subtitle: "User's Photos")),
-                                  SizedBox(height: 10),
-                                  GridView.builder(
-                                    shrinkWrap: true,
-                                    physics: NeverScrollableScrollPhysics(),
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 20),
-                                    gridDelegate:
-                                        SliverGridDelegateWithMaxCrossAxisExtent(
-                                            maxCrossAxisExtent: 200,
-                                            childAspectRatio: 1,
-                                            crossAxisSpacing: 10,
-                                            mainAxisSpacing: 10),
-                                    itemCount: photoState
-                                        .getPhotoPreviewAllCollections()
-                                        .length,
-                                    itemBuilder: (context, index) {
-                                      final previews = photoState
-                                              .getPhotoPreviewAllCollections()[
-                                          index];
-                                      return CachedNetworkImage(
-                                        imageUrl: previews.urls?.small ?? '',
-                                        fit: BoxFit.cover,
-                                      );
-                                    },
-                                  ),
-                                ],
+                              final photos =
+                                  photoState.getPhotoPreviewAllCollections();
+                              return UsersPhotos(
+                                photos: photos,
                               );
                             },
                           ),

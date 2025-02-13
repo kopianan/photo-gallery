@@ -23,7 +23,6 @@ class CollectionsList extends StatelessWidget {
       child: BlocProvider(
         create: (context) => getIt<CollectionCubit>()
           ..getUserCollection(
-            // 'unsplashplus'
             userName ?? 'unsplashplus',
           ),
         child: BlocConsumer<CollectionCubit, CollectionState>(
