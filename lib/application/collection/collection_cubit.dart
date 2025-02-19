@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:photo_gallery/domain/collection/collection_repository.dart';
 import 'package:photo_gallery/domain/collection/user_collection.dart';
+import 'package:photo_gallery/infrastructure/photo/response_failure.dart';
 
 part 'collection_state.dart';
 part 'collection_cubit.freezed.dart';

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_gallery/application/photo_data/photo_data_cubit.dart';
 import 'package:photo_gallery/injection.dart';
 import 'package:photo_gallery/presentation/home/home_page.dart';
+import 'package:photo_gallery/util/custom_colors.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -15,10 +16,15 @@ class MyApp extends StatelessWidget {
         builder: (context, state) {
           return MaterialApp(
             title: 'Photo Gallery',
-            theme: ThemeData(
-              scaffoldBackgroundColor: Colors.white,
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-              useMaterial3: true,
+            theme: ThemeData.light().copyWith(
+              extensions: <ThemeExtension<CustomThemeExtension>>[
+                CustomThemeExtension.lightCustomTheme(),
+              ],
+            ),
+            darkTheme: ThemeData.dark().copyWith(
+              extensions: <ThemeExtension<dynamic>>[
+                 CustomThemeExtension.darkCustomTheme(),
+              ],
             ),
             home: HomePage(),
           );

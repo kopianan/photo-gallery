@@ -12,6 +12,7 @@ import 'package:photo_gallery/presentation/detail/widgets/user_detail_widget.dar
 import 'package:photo_gallery/presentation/detail/widgets/users_photos_section.dart';
 import 'package:photo_gallery/presentation/widgets/marquee_widget.dart';
 import 'package:photo_gallery/presentation/widgets/subtitle_widget.dart';
+import 'package:photo_gallery/util/string_util.dart';
 import 'package:photo_gallery/util/toast.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -27,6 +28,7 @@ class DetailPage extends StatefulWidget {
 class _DetailPageState extends State<DetailPage> {
   late PhotoModel photoModel;
   late User? user;
+  final photoCubit = getIt<PhotoCubit>();
 
   @override
   void initState() {
@@ -34,14 +36,9 @@ class _DetailPageState extends State<DetailPage> {
     user = photoModel.user;
     //clear initial data
     getIt<PhotoDataCubit>().setPhotoStat(null);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
     //remove all data after close page
     getIt<PhotoDataCubit>().setUserCollection([]);
-    super.dispose();
+    super.initState();
   }
 
   @override
@@ -63,24 +60,9 @@ class _DetailPageState extends State<DetailPage> {
         ),
         body: BlocProvider(
           //load photo stat
-          create: (context) =>
-              getIt<PhotoCubit>()..getPhotoStat(id: photoModel.id),
+          create: (context) => photoCubit..getPhotoStat(id: photoModel.id),
           child: BlocConsumer<PhotoCubit, PhotoState>(
-            listener: (context, state) {
-              state.maybeMap(
-                orElse: () {},
-                error: (value) {
-                  Toast.showToast(
-                    context,
-                    label: value.errMessage,
-                    type: StatusType.error,
-                  );
-                },
-                onGetPhotoStat: (value) {
-                  getIt<PhotoDataCubit>().setPhotoStat(value.photoStat);
-                },
-              );
-            },
+            listener: photoListener,
             builder: (context, state) {
               return Column(
                 children: [
@@ -172,6 +154,35 @@ class _DetailPageState extends State<DetailPage> {
             },
           ),
         ));
+  }
+
+  void photoListener(context, state) {
+    state.maybeMap(
+      orElse: () {},
+      error: (value) {
+        String errorMessage = '';
+        value.err.map(
+          badResponse: (e) => {
+            errorMessage = e.messages.toSet().toString().removeParentheses()
+          },
+          timeOut: (e) => {errorMessage = e.messages},
+          connectionError: (e) => {errorMessage = e.messages},
+          serverError: (e) => {errorMessage = e.messages},
+          unauthorized: (e) => {
+            errorMessage = e.messages.toSet().toString().removeParentheses()
+          },
+          unknown: (e) => {errorMessage = e.messages},
+        );
+        Toast.showToast(
+          context,
+          label: errorMessage,
+          type: StatusType.error,
+        );
+      },
+      onGetPhotoStat: (value) {
+        getIt<PhotoDataCubit>().setPhotoStat(value.photoStat);
+      },
+    );
   }
 
   void _onDownloadTap() {

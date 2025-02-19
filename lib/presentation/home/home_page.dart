@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:photo_gallery/application/photo/photo_cubit.dart';
 import 'package:photo_gallery/application/photo_data/photo_data_cubit.dart';
 import 'package:photo_gallery/infrastructure/enum/status_type.dart';
 import 'package:photo_gallery/injection.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_gallery/presentation/detail/detail_page.dart';
 import 'package:photo_gallery/presentation/home/user_profile_widget.dart';
 import 'package:photo_gallery/presentation/widgets/parallax_image.dart';
+import 'package:photo_gallery/util/string_util.dart';
 import 'package:photo_gallery/util/toast.dart';
 
 class HomePage extends StatefulWidget {
@@ -72,110 +74,175 @@ class _HomePageState extends State<HomePage> {
         ),
       ],
       child: BlocConsumer<PhotoCubit, PhotoState>(
-        listener: (context, state) {
-          state.maybeMap(
-            error: (value) {
-              Toast.showToast(
-                context,
-                label: value.errMessage,
-                type: StatusType.error,
-              );
-            },
-            orElse: () {
-              photoDataCubit.setLoadingStatus(false);
-            },
-            loading: (value) {
-              photoDataCubit.setLoadingStatus(true);
-            },
-            onGetPhotos: (e) {
-              if (e.photos.isEmpty) {
-                Toast.showToast(
-                  context,
-                  label: "No More Data",
-                  type: StatusType.warning,
-                );
-                return;
-              }
-              //increase current page
-              photoDataCubit.increasePage();
-              //set loading status
-              photoDataCubit.setLoadingStatus(false);
-              //adding new data list to current list
-              photoDataCubit.addPhotos(e.photos);
-            },
-            onSearchPhoto: (value) {
-              if (value.searchResult.results.isEmpty) {
-                Toast.showToast(
-                  context,
-                  label: "No More Data",
-                  type: StatusType.warning,
-                );
-                return;
-              }
-              //set total pages
-              photoDataCubit.setMaxPage(value.searchResult.totalPages);
-              //increase current page
-              photoDataCubit.increasePage();
-              //set loading status
-              photoDataCubit.setLoadingStatus(false);
-              //adding new data list to current list
-              photoDataCubit.addPhotos(value.searchResult.results);
-            },
-          );
-        },
+        listener: photoListener,
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
               title: Text("Photo Gallery"),
               bottom: customSearchBar(),
             ),
-            body: BlocBuilder<PhotoDataCubit, PhotoDataState>(
-              builder: (context, photoState) {
-                return GridView.builder(
-                  controller: _scrollController,
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  itemCount: photoState.getPhotos.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    childAspectRatio: 0.7,
-                  ),
-                  itemBuilder: (context, index) {
-                    final singlePhoto = photoState.getPhotos[index];
-                    final user = singlePhoto.user;
-
-                    return InkWell(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) =>
-                              DetailPage(photoModel: singlePhoto),
-                        ));
-                      },
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10.0),
-                        child: Stack(
-                          children: [
-                            ParallaxImage(
-                                id: singlePhoto.id,
-                                imagePath: singlePhoto.urls?.regular ?? ''),
-                            Positioned(
-                              bottom: 0,
-                              left: 0,
-                              right: 0,
-                              child: UserProfileWidget(user: user),
-                            )
-                          ],
+            body: BlocBuilder<PhotoCubit, PhotoState>(
+              builder: (context, state) {
+                return state.maybeMap(loading: (value) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }, error: (value) {
+                  return SizedBox(
+                    width: double.infinity,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Something Wrong",
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                );
+                        SizedBox(height: 10),
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            if (photoDataCubit.state.keyword == null) {
+                              //reload photo
+                              photoCubit.loadPhoto(
+                                page: photoDataCubit.state.currentPage,
+                                perPage: photoDataCubit.state.totalItem,
+                              );
+                            } else {
+                              //retry with keywoard search
+                              photoCubit.searchPhotos(
+                                  page: photoDataCubit.state.currentPage,
+                                  perPage: photoDataCubit.state.totalItem,
+                                  keyword: photoDataCubit.state.keyword ?? '');
+                            }
+                          },
+                          label: Text("Retry"),
+                          icon: Icon(Icons.refresh),
+                        )
+                      ],
+                    ),
+                  );
+                }, orElse: () {
+                  return BlocBuilder<PhotoDataCubit, PhotoDataState>(
+                    builder: (context, photoState) {
+                      return GridView.builder(
+                        controller: _scrollController,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        itemCount: photoState.getPhotos.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          childAspectRatio: 0.7,
+                        ),
+                        itemBuilder: (context, index) {
+                          final singlePhoto = photoState.getPhotos[index];
+                          final user = singlePhoto.user;
+
+                          return InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) =>
+                                    DetailPage(photoModel: singlePhoto),
+                              ));
+                            },
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: Stack(
+                                children: [
+                                  ParallaxImage(
+                                      id: singlePhoto.id,
+                                      imagePath:
+                                          singlePhoto.urls?.regular ?? ''),
+                                  Positioned(
+                                    bottom: 0,
+                                    left: 0,
+                                    right: 0,
+                                    child: UserProfileWidget(user: user),
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  );
+                });
               },
             ),
           );
         },
       ),
+    );
+  }
+
+  void photoListener(context, state) {
+    state.maybeMap(
+      error: (value) {
+        String errorMessage = '';
+        value.err.map(
+          badResponse: (e) => {
+            errorMessage = e.messages.toSet().toString().removeParentheses()
+          },
+          timeOut: (e) => {errorMessage = e.messages},
+          connectionError: (e) => {errorMessage = e.messages},
+          serverError: (e) => {errorMessage = e.messages},
+          unauthorized: (e) => {
+            errorMessage = e.messages.toSet().toString().removeParentheses()
+          },
+          unknown: (e) => {errorMessage = e.messages},
+        );
+        Toast.showToast(
+          context,
+          label: errorMessage,
+          type: StatusType.error,
+        );
+      },
+      orElse: () {
+        photoDataCubit.setLoadingStatus(false);
+      },
+      loading: (value) {
+        photoDataCubit.setLoadingStatus(true);
+      },
+      onGetPhotos: (e) {
+        if (e.photos.isEmpty) {
+          Toast.showToast(
+            context,
+            label: "No More Data",
+            type: StatusType.warning,
+          );
+          return;
+        }
+        //increase current page
+        photoDataCubit.increasePage();
+        //set loading status
+        photoDataCubit.setLoadingStatus(false);
+        //adding new data list to current list
+        photoDataCubit.addPhotos(e.photos);
+      },
+      onSearchPhoto: (value) {
+        if (value.searchResult.results.isEmpty) {
+          Toast.showToast(
+            context,
+            label: "No More Data",
+            type: StatusType.warning,
+          );
+          return;
+        }
+        //set total pages
+        photoDataCubit.setMaxPage(value.searchResult.totalPages);
+        //increase current page
+        photoDataCubit.increasePage();
+        //set loading status
+        photoDataCubit.setLoadingStatus(false);
+        //adding new data list to current list
+        photoDataCubit.addPhotos(value.searchResult.results);
+      },
     );
   }
 

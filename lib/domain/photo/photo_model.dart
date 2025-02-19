@@ -21,7 +21,7 @@ class PhotoModel with _$PhotoModel {
     Urls? urls,
     PhotoModelLinks? links,
     required int likes,
-    required bool likedByUser,
+    bool? likedByUser,
     required List<dynamic> currentUserCollections,
     required dynamic sponsorship,
     TopicSubmissions? topicSubmissions,

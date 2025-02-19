@@ -4,6 +4,8 @@ import 'package:injectable/injectable.dart';
 import 'package:photo_gallery/domain/collection/collection_repository.dart';
 import 'package:photo_gallery/domain/collection/user_collection.dart';
 import 'package:photo_gallery/infrastructure/collection/user_collection_dto.dart';
+import 'package:photo_gallery/infrastructure/core/dio_helper.dart';
+import 'package:photo_gallery/infrastructure/photo/response_failure.dart';
 
 @LazySingleton(as: CollectionRepository)
 class CollectionDataProvider implements CollectionRepository {
@@ -12,7 +14,7 @@ class CollectionDataProvider implements CollectionRepository {
   final Dio dio;
 
   @override
-  Future<Either<String, List<UserCollection>>> getUserCollections(
+  Future<Either<ResponseFailure, List<UserCollection>>> getUserCollections(
     String userName, {
     int page = 1,
     int totalPerPage = 10,
@@ -27,8 +29,10 @@ class CollectionDataProvider implements CollectionRepository {
           list.map((e) => UserCollectionDto.fromJson(e).toDomain()).toList();
 
       return right(dataList);
+    } on DioException catch (e) {
+      return left(DioHelper.handleDioError(e));
     } catch (e) {
-      return left(e.toString());
+      return left(ResponseFailure.unknown("Unknown Error"));
     }
   }
 }

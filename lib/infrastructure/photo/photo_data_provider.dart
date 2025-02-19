@@ -5,8 +5,10 @@ import 'package:photo_gallery/domain/photo/photo_model.dart';
 import 'package:photo_gallery/domain/photo/photo_repository.dart';
 import 'package:photo_gallery/domain/photo/photo_stat.dart';
 import 'package:photo_gallery/domain/search/search_photo.dart';
+import 'package:photo_gallery/infrastructure/core/dio_helper.dart';
 import 'package:photo_gallery/infrastructure/photo/photo_dto.dart';
 import 'package:photo_gallery/infrastructure/photo/photo_stat_dto.dart';
+import 'package:photo_gallery/infrastructure/photo/response_failure.dart';
 import 'package:photo_gallery/infrastructure/photo/search_photo_dto.dart';
 
 @LazySingleton(as: PhotoRepository)
@@ -15,7 +17,7 @@ class PhotoDataProvider implements PhotoRepository {
   PhotoDataProvider(@Named('dioBaseClient') this.dio);
   final Dio dio;
   @override
-  Future<Either<String, List<PhotoModel>>> loadPhotos(
+  Future<Either<ResponseFailure, List<PhotoModel>>> loadPhotos(
       int page, int totalItem) async {
     //call api with
     try {
@@ -30,13 +32,15 @@ class PhotoDataProvider implements PhotoRepository {
       final dataList =
           list.map((e) => PhotoDto.fromJson(e).toDomain()).toList();
       return right(dataList);
-    } on Exception catch (e) {
-      return left(e.toString());
+    } on DioException catch (e) {
+      return left(DioHelper.handleDioError(e));
+    } catch (e) {
+      return left(ResponseFailure.unknown("Unknown Error"));
     }
   }
 
   @override
-  Future<Either<String, PhotoStat>> getPhotoStatus(String id) async {
+  Future<Either<ResponseFailure, PhotoStat>> getPhotoStatus(String id) async {
     //call api with
     try {
       final response = await dio.get("/photos/$id/statistics");
@@ -45,13 +49,15 @@ class PhotoDataProvider implements PhotoRepository {
       //convert with dto (data transfer object)
       final dataList = PhotoStatDto.fromJson(response.data).toDomain();
       return right(dataList);
-    } on Exception catch (e) {
-      return left(e.toString());
+    } on DioException catch (e) {
+      return left(DioHelper.handleDioError(e));
+    } catch (e) {
+      return left(ResponseFailure.unknown("Unknown Error"));
     }
   }
 
   @override
-  Future<Either<String, SearchPhoto>> searchPhotos(
+  Future<Either<ResponseFailure, SearchPhoto>> searchPhotos(
       int page, int totalItem, String keyword) async {
     //call api with
     try {
@@ -63,13 +69,15 @@ class PhotoDataProvider implements PhotoRepository {
           "query": keyword,
         },
       );
-      //receive response as list
+      //recive response as list
 
       //convert with dto (data transfer object)
       final dataList = SearchPhotoDto.fromJson(response.data).toDomain();
       return right(dataList);
-    } on Exception catch (e) {
-      return left(e.toString());
+    } on DioException catch (e) {
+      return left(DioHelper.handleDioError(e));
+    } catch (e) {
+      return left(ResponseFailure.unknown("Unknown Error"));
     }
   }
 }

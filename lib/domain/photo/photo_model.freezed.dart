@@ -32,7 +32,7 @@ mixin _$PhotoModel {
   Urls? get urls => throw _privateConstructorUsedError;
   PhotoModelLinks? get links => throw _privateConstructorUsedError;
   int get likes => throw _privateConstructorUsedError;
-  bool get likedByUser => throw _privateConstructorUsedError;
+  bool? get likedByUser => throw _privateConstructorUsedError;
   List<dynamic> get currentUserCollections =>
       throw _privateConstructorUsedError;
   dynamic get sponsorship => throw _privateConstructorUsedError;
@@ -70,7 +70,7 @@ abstract class $PhotoModelCopyWith<$Res> {
       Urls? urls,
       PhotoModelLinks? links,
       int likes,
-      bool likedByUser,
+      bool? likedByUser,
       List<dynamic> currentUserCollections,
       dynamic sponsorship,
       TopicSubmissions? topicSubmissions,
@@ -115,7 +115,7 @@ class _$PhotoModelCopyWithImpl<$Res, $Val extends PhotoModel>
     Object? urls = freezed,
     Object? links = freezed,
     Object? likes = null,
-    Object? likedByUser = null,
+    Object? likedByUser = freezed,
     Object? currentUserCollections = null,
     Object? sponsorship = freezed,
     Object? topicSubmissions = freezed,
@@ -187,10 +187,10 @@ class _$PhotoModelCopyWithImpl<$Res, $Val extends PhotoModel>
           ? _value.likes
           : likes // ignore: cast_nullable_to_non_nullable
               as int,
-      likedByUser: null == likedByUser
+      likedByUser: freezed == likedByUser
           ? _value.likedByUser
           : likedByUser // ignore: cast_nullable_to_non_nullable
-              as bool,
+              as bool?,
       currentUserCollections: null == currentUserCollections
           ? _value.currentUserCollections
           : currentUserCollections // ignore: cast_nullable_to_non_nullable
@@ -310,7 +310,7 @@ abstract class _$$PhotoModelImplCopyWith<$Res>
       Urls? urls,
       PhotoModelLinks? links,
       int likes,
-      bool likedByUser,
+      bool? likedByUser,
       List<dynamic> currentUserCollections,
       dynamic sponsorship,
       TopicSubmissions? topicSubmissions,
@@ -358,7 +358,7 @@ class __$$PhotoModelImplCopyWithImpl<$Res>
     Object? urls = freezed,
     Object? links = freezed,
     Object? likes = null,
-    Object? likedByUser = null,
+    Object? likedByUser = freezed,
     Object? currentUserCollections = null,
     Object? sponsorship = freezed,
     Object? topicSubmissions = freezed,
@@ -430,10 +430,10 @@ class __$$PhotoModelImplCopyWithImpl<$Res>
           ? _value.likes
           : likes // ignore: cast_nullable_to_non_nullable
               as int,
-      likedByUser: null == likedByUser
+      likedByUser: freezed == likedByUser
           ? _value.likedByUser
           : likedByUser // ignore: cast_nullable_to_non_nullable
-              as bool,
+              as bool?,
       currentUserCollections: null == currentUserCollections
           ? _value._currentUserCollections
           : currentUserCollections // ignore: cast_nullable_to_non_nullable
@@ -478,7 +478,7 @@ class _$PhotoModelImpl implements _PhotoModel {
       this.urls,
       this.links,
       required this.likes,
-      required this.likedByUser,
+      this.likedByUser,
       required final List<dynamic> currentUserCollections,
       required this.sponsorship,
       this.topicSubmissions,
@@ -526,7 +526,7 @@ class _$PhotoModelImpl implements _PhotoModel {
   @override
   final int likes;
   @override
-  final bool likedByUser;
+  final bool? likedByUser;
   final List<dynamic> _currentUserCollections;
   @override
   List<dynamic> get currentUserCollections {
@@ -646,7 +646,7 @@ abstract class _PhotoModel implements PhotoModel {
       final Urls? urls,
       final PhotoModelLinks? links,
       required final int likes,
-      required final bool likedByUser,
+      final bool? likedByUser,
       required final List<dynamic> currentUserCollections,
       required final dynamic sponsorship,
       final TopicSubmissions? topicSubmissions,
@@ -686,7 +686,7 @@ abstract class _PhotoModel implements PhotoModel {
   @override
   int get likes;
   @override
-  bool get likedByUser;
+  bool? get likedByUser;
   @override
   List<dynamic> get currentUserCollections;
   @override

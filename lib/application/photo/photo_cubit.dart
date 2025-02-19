@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -5,6 +7,7 @@ import 'package:photo_gallery/domain/photo/photo_model.dart';
 import 'package:photo_gallery/domain/photo/photo_repository.dart';
 import 'package:photo_gallery/domain/photo/photo_stat.dart';
 import 'package:photo_gallery/domain/search/search_photo.dart';
+import 'package:photo_gallery/infrastructure/photo/response_failure.dart';
 
 part 'photo_state.dart';
 part 'photo_cubit.freezed.dart';
@@ -30,8 +33,10 @@ class PhotoCubit extends Cubit<PhotoState> {
       {required int page,
       required int perPage,
       required String keyword}) async {
+    log(page.toString(), name: "TRIGGER");
     emit(PhotoState.loading());
     final result = await photoRepository.searchPhotos(page, perPage, keyword);
+    log(result.toString(), name: "TRIGGER");
     result.fold(
       (l) => emit(PhotoState.error(l)),
       (r) => emit(PhotoState.onSearchPhoto(r)),

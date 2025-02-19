@@ -66,7 +66,7 @@ extension PhotoDtoX on PhotoDto {
         urls: urls?.toDomain(),
         links: links?.toDomain(),
         likes: likes ?? 0,
-        likedByUser: likedByUser ?? false,
+        likedByUser: likedByUser,
         currentUserCollections: currentUserCollections,
         sponsorship: sponsorship,
         topicSubmissions: topicSubmissions?.toDomain(),
